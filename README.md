@@ -53,6 +53,12 @@ By default, `./config.yaml` is loaded for configuration, however you can specify
 ./run_server.py -c alternate_config.yaml
 ```
 
+## API Documentation
+
+API documentation is available in [docs/api-docs-v0.1.yaml](docs/api-docs-v0.1.yaml). 
+
+A human-readable version can be found on [Restaway](https://backupbrain.github.io/restaway/?q=https://github.com/anode-co/vpn-api-server/blob/master/docs/api-docs-v0.1.yaml)
+
 ## Known issues
 
 * Database is no created on startup. Must use existing database.
@@ -62,3 +68,5 @@ By default, `./config.yaml` is loaded for configuration, however you can specify
 * Currently the `ip4_allocations_per_client` and `ip6_allocations_per_client` is read as an integer, so that `ip4_allocations_per_client: 4` results is 4 IP addresses being issued to the client.
 
 * Must run on port 8888 as clients expect VPN to be available on that port.
+
+* DELETE /authorize/ requires a request body rather than a URL parameter, breaking REST conventions.

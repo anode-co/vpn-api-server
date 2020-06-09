@@ -1,0 +1,112 @@
+openapi: 3.0.1
+info:
+  title: Anode VPN Server
+  description: 'VPN server for Anode at [http://localhost](http://localhost)'
+  termsOfService: 'http://anode.co/terms/'
+  contact:
+    email: info@anode.co
+  version: "0.1"
+externalDocs:
+  description: Find out more about Anode
+  url: 'http://anode.co'
+servers:
+  - url: 'https://localhost:888/'
+tags:
+  - name: Authorize
+    description: 'Authorize clients on the VPN'
+    externalDocs:
+      description: Find out more
+      url: 'http://api.anode.co'
+paths:
+  /authorize/:
+    post:
+      tags:
+        - Authorize
+      summary: Client requests authorization from VPN server for access to the VPN, including active network routes and IP address allocation.
+      operationId: addClientAuthorization
+      requestBody:
+        description: Client public key
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicKeyInput'
+        required: true
+      responses:
+        '201':
+          description: Created. New client authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '200':
+          description: OK. Existing client authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '405':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '403':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+    delete:
+      tags:
+        - Authorize
+      summary: Remove authorization for a client public key
+      operationId: removeClientAuthorization
+      requestBody:
+        description: Client public key
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicKeyInput'
+        required: true
+      responses:
+        '200':
+          description: OK. Authorization removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+      
+components:
+  schemas:
+    StatusResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: 'success'
+          enum:
+            - success
+            - error
+          description: >
+            Status:
+              * `success` - Method completed successfully
+              * `error` - Error processing request
+        message:
+          type: string
+          example: 'not found'
+          description: Human readable text describing the nature of the status
+    PublicKeyInput:
+      type: object
+      properties:
+        client_public_key:
+          type: string
+          example: skZ6UtW5u09lHNsj6tQ51s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQAB.k
+          description: A cjdns client's public key
+  
+
