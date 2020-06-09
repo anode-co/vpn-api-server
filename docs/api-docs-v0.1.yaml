@@ -22,7 +22,8 @@ paths:
     post:
       tags:
         - Authorize
-      summary: Client requests authorization from VPN server for access to the VPN, including active network routes and IP address allocation.
+      summary: Authorize cjdns public key
+      description: Client requests authorization from VPN server for access to the VPN, including active network routes and IP address allocation.
       operationId: addClientAuthorization
       requestBody:
         description: Client public key
@@ -59,7 +60,8 @@ paths:
     delete:
       tags:
         - Authorize
-      summary: Remove authorization for a client public key
+      summary: Remove authorized public key
+      description: Remove authorization for a client public key
       operationId: removeClientAuthorization
       requestBody:
         description: Client public key
