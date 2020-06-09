@@ -50,7 +50,7 @@ Run the server locally with the following command:
 By default, `./config.yaml` is loaded for configuration, however you can specify another configuration file using the `-c` argument:
 
 ```code
-./run_server.py -c alternate_config.yaml`
+./run_server.py -c alternate_config.yaml
 ```
 
 ## Known issues
