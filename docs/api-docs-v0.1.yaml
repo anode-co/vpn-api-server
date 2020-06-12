@@ -5,12 +5,12 @@ info:
   termsOfService: 'http://anode.co/terms/'
   contact:
     email: info@anode.co
-  version: "0.1"
+  version: "1.0"
 externalDocs:
   description: Find out more about Anode
   url: 'http://anode.co'
 servers:
-  - url: 'https://localhost:888/'
+  - url: 'https://localhost:8888/'
 tags:
   - name: Authorize
     description: 'Authorize clients on the VPN'
@@ -18,7 +18,7 @@ tags:
       description: Find out more
       url: 'http://api.anode.co'
 paths:
-  /authorize/:
+  /api/0.3/server/authorize/:
     post:
       tags:
         - Authorize
@@ -40,36 +40,42 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatusResponse'
         '200':
-          description: OK. Existing client authorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StatusResponse'
-        '405':
-          description: Invalid input.
+          description: OK. Authorization extended
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/StatusResponse'
         '403':
-          description: Unauthorized.
+          description: Forbidden. This cilent is not authorized to connect
+        '407':
+          description: Proxy Authentication Failed. The coordinaton server signature could not be verified
+        '500':
+          description: Server Error. Response for all other errors.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/StatusResponse'
+        '503':
+          description: Service Unavailable. No more IP addresses for allocation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+  /api/0.3/server/authorize/{clientPublicKey}:
     delete:
       tags:
         - Authorize
       summary: Remove authorized public key
       description: Remove authorization for a client public key
       operationId: removeClientAuthorization
-      requestBody:
-        description: Client public key
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PublicKeyInput'
-        required: true
+      parameters:
+        - in: path
+          name: clientPublicKey
+          schema:
+            type: string
+            example: lbqr0rzyc2tuysw3w8gfr95u68kujzlq7zht5hyf452u8yshr120.k
+          description: authorized client cjdns public key
+          required: true
       responses:
         '200':
           description: OK. Authorization removed
@@ -83,7 +89,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StatusResponse'
-      
 components:
   schemas:
     StatusResponse:
@@ -103,10 +108,20 @@ components:
           type: string
           example: 'not found'
           description: Human readable text describing the nature of the status
+        expiresAt:
+          type: string
+          format:  integer
+          example: '1591963516'
+          description: Unix timestamp representing the date and time the authorization and allocated IP addresses expires
+        date:
+          type: string
+          format: integer
+          example: '1591963441'
+          description: Unix-timestamp of response
     PublicKeyInput:
       type: object
       properties:
-        client_public_key:
+        clientPublicKey:
           type: string
           example: skZ6UtW5u09lHNsj6tQ51s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQAB.k
           description: A cjdns client's public key
